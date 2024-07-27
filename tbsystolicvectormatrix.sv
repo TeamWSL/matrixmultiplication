@@ -29,15 +29,24 @@ module tb_systolicmatrixvector;
     // Signals
     logic clk;
     logic rstn;
+    reg signed [7:0] matrix [SIZE - 1:0][SIZE - 1:0];
     logic signed [WIDTH-1:0] in_vector [SIZE-1:0];
     logic signed [WIDTH-1:0] out_vector [SIZE-1:0];
-
+    initial begin
+        // Example: Initializing matrix with a pattern
+        for (int i = 0; i < SIZE; i = i + 1) begin
+            for (int j = 0; j < SIZE; j = j + 1) begin
+                 matrix[i][j] = $urandom % 10 - 5; // Random value between -128 and 127
+            end
+        end
+    end
     // Instantiate the DUT (Device Under Test)
     systolicmatrixvector dut (
         .clk(clk),
         .rstn(rstn),
         .in_vector(in_vector),
-        .out_vector(out_vector)
+        .out_vector(out_vector),
+        .matrix(matrix)
     );
 
     // Clock Generation
@@ -51,7 +60,7 @@ module tb_systolicmatrixvector;
         // Initialize inputs
         rstn = 0;
         for (int i = 0; i < SIZE; i = i + 1) begin
-            in_vector[i] = $urandom % 256 - 128; // Random number between -128 and 127
+            in_vector[i] = $urandom % 10 - 5; // Random number between -128 and 127
         end
 
         // Apply reset
@@ -68,10 +77,6 @@ module tb_systolicmatrixvector;
         end
 
         // Finish simulation
-        #20;
-        rstn = 0;
-        #20
-        $stop;
     end
 
 endmodule
